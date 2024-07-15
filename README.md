@@ -32,10 +32,12 @@ cd out/build/Compiler #替换成自己的路径
 + act中同一个命令的参数用空格分隔，不同命令用分号分隔，不能处理换行符。
 + 具体的可以仿照gensLab4.txt中产生式
 在如图Compiler.cpp中的Compiler::compile()中，将注释调整到如下状态，即接受输入+带参数的构造函数调用
+
 ![image](https://github.com/user-attachments/assets/385bc4d6-eed3-4e42-acfb-7a46ea22a1c9)
 
 第二种，通过默认构造函数直接生成文法分析器，耗时较短，可以用来提交到平台。默认的构造函数代码可以由下面将要提到的第一种输出方式自动产生。
 将注释调整到如下状态，即只有一个默认构造函数。
+
 ![image](https://github.com/user-attachments/assets/01d6b984-ae23-4e91-bc9c-02cd1b056246)
 
 
@@ -47,7 +49,9 @@ cd out/build/Compiler #替换成自己的路径
 第二种，接受简化C语言代码输入进行编译，需要恢复注释。
 
 该程序的SDT的语义动作部分只实现了若干种，如果需要扩展，需要在SynAnalyzer::scan中添加新的if else自己实现命令解析
+
 ![image](https://github.com/user-attachments/assets/373fe1e8-bd58-49a6-bd97-41b75899e01e)
+
 其中getTarget(root, cmd.args[i])->attrs[cmd.args[j]]的含义是命令第i个参数所代表的节点的，名为命令第j个参数的属性值所在的变量
 
 

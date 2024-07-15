@@ -1,0 +1,118 @@
+(1)createD $i $j
+    # 为 $j.D 新建一个父定义域为 $i.D 的定义域, $i 可以为NULL
+
+(2.1)claimFun $d <D> $i <T> $j <name> $k <argByte> 
+(2.2)defFun $d <D> $j <name> $k <varByte> $l <code>
+
+
+(3)createVar $i <D> $j <T> $k <name>
+    # 在$i.name定义域中创建类型为$j.name，名为$k.name的变量
+
+(4)createArg $i <D> $j <T> $k <name>
+    # 与上面类似，但是创建参数，从bps向上+x
+
+(5)takeVar $d <D> $i <name> $j <code> 
+    # 取出定义域"$d.D"变量$i.name放入栈中，代码记入$j.code
+
+(6)takeConst $i <value> $j <code>
+    # "取出常量$i.name放入栈中，代码计入$j.name"
+
+(7)callFun $i <D> $j <name> $k <code>
+    #调用$i.D的函数$j.name
+    # 注意调用后压栈
+    $k.code = "call $i.D -> getName($j.name)"+"push eax"
+
+(8)getByte $i <xxxByte> $j <T>
+    $i.xxxByte = getByte($j.T)
+
+(9)empty $i <name>
+    # $i.name = ""
+
+(10)let $i <name> <value>
+    # $i.name = value
+
+(11)mov $i <name> $j <name>
+    # $i.name = $j.name
+
+(12)add3 $i <name> $j <name> $k <name>
+    # $i.name = $j.name + $k.name（数值形式）
+
+(13)link3 $i <name> $j <name> $k <name>
+    字符串连接
+    i.name = j.name + k.name 
+
+(14)print $i <name>
+    # 输出 $i.name
+
+(15)pop $i <code>
+    pop一次,代码存入$i.code
+
+(16)return $x <retRef> $i <code>
+    return,返回值,消除子定义域的层数x.retRef，代码存入$i.code
+
+(17)returnVoid $x <retRef> $i <code>
+    return不返回值,消除子定义域的层数x.retRef,代码存入$i.code
+
+(18)c= $d <D> $i <name> $j <name>
+    "以汇编码将$d.D中名为$i.name的变量进行一次赋值(从栈中取),把代码存入$j.name"
+
+(19)c_=Const $d <D> $i <name> <C> $j <name>
+    赋值为一个常量
+
+(20)c_|| $i <code>
+
+(21)c_&& $i <code>
+
+(22)c_| $i <code>
+
+(23)c_^ $i <code>
+
+(24)c_& $i <code>
+
+(25)c_== $i <code>
+
+(26)c_!= $i <code>
+
+(27)c_> $i <code>
+
+(28)c_< $i <code>
+
+(29)c_>= $i <code>
+
+(30)c_<= $i <code>
+
+(31)c_+ $i <code>
+    "以汇编码进行一次加法,代码存入i.name"
+    1.$i.<name> = "push ebx\n" + "push eax\n" + "add eax, ebx\n" + "push eax\n"
+
+(32)c_- $i <code>
+
+(33)c_* $i <code>
+
+(34)c_/ $i <code>
+
+(35)c_% $i <code>
+
+(36)c_-1 $i <code>
+
+(37)c_~ $i <code>
+
+(38)c_! $i <code>
+
+(39)label $i <L>
+    分配一个新标签存进$i.L
+(40)pLabel $i <L> $j <code>
+    输入标签i.L,代码放入j.code
+(41)jz $i <L> $j <code>
+    从栈中取数判断,如果是0就跳转到i.L，代码存入j.code
+(42)j $i <L> $j <code>
+    无条件跳转到i.L，代码存入j.code
+
+(43)newEnv $i <byte> $j <code>
+    创建一个大小为i.byte的环境，代码存入j.code
+    push ebp
+    mov ebp,esp
+    sub esp i.byte
+
+(44)leave $i.code
+(45)leave_n $t <time> $i.code

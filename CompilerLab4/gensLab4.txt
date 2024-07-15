@@ -1,0 +1,92 @@
+[PP] -> [P]
+[P] -> {createD NULL 1;}[Fdefs]
+[Fdefs] -> {mov 1 D -1 D; mov 2 D -1 D;} [Fdefs][Fdef] 
+[Fdefs] ->
+[Fdef] -> {createD -1 4; mov 8 D 4 D; let 8 retRef 0;} [T] <id> <(>[Arg_list]<)> {claimFun -1 D 1 T 2 value 4 argByte;} <{>[STs]<}> {defFun -1 D 2 value 8 byte -1 code;link3 -1 code -1 code 8 code; print -1 code;}
+[STs] -> {mov 1 D -1 D; mov 1 retRef -1 retRef; mov 1 Lin -1 Lin; mov 1 Lout -1 Lout; mov 1 brkRef -1 brkRef; mov 2 D -1 D; mov 2 retRef -1 retRef; mov 2 Lin -1 Lin; mov 2 Lout -1 Lout; mov 2 brkRef -1 brkRef;} [STs] [ST] {link3 -1 code 1 code 2 code; add3 -1 byte 1 byte 2 byte;}
+[STs] -> {empty -1 code;let -1 byte 0;}
+
+[T] -> <int> {mov -1 T 0 value;}
+[T] -> <void> {mov -1 T 0 value;}
+
+[Arg_list] -> {let -1 argByte 0;}
+[Arg_list] -> {mov 1 D -1 D; mov 2 D -1 D;}[Arg_def][Arg_list_tail] {add3 -1 argByte 1 argByte 2 argByte;}
+[Arg_list_tail] -> {mov 1 D -1 D; mov 3 D -1 D;} [Arg_list_tail] <,>[Arg_def] {add3 -1 argByte 1 argByte 3 argByte;}
+[Arg_list_tail] -> {let -1 argByte 0;}
+[Arg_def] -> [T] <id> {createArg -1 D 0 T 1 value; getByte -1 argByte 0 T;}
+
+[ST] -> [T]{mov 2 D -1 D; mov 3 D -1 D; mov 2 T 0 T; mov 3 T 0 T;}[Var_init][Var_def_tail]<;> {add3 -1 byte 2 byte 3 byte; link3 -1 code 2 code 3 code;}
+[Var_def_tail] -> {empty -1 code; let -1 byte 0;}
+[Var_def_tail] -> {mov 1 D -1 D; mov 3 D -1 D; mov 1 T -1 T; mov 3 T -1 T;}[Var_def_tail]<,>[Var_init] {add3 -1 byte 1 byte 3 byte;link3 -1 code 1 code 3 code;} 
+[Var_init] -> <id> {createVar -1 D -1 T 0 value; c_=Const -1 D 0 value 0 -1 code; getByte -1 byte -1 T;}
+[Var_init] -> {mov 3 D -1 D;} <id> <=> [exp] {createVar -1 D -1 T 1 value; c_= -1 D 1 value -1 code; getByte -1 byte -1 T; link3 -1 code 3 code -1 code;}
+
+[exp_list] -> {empty -1 code;}
+[exp_list] -> {mov 1 D -1 D; mov 2 D -1 D;} [exp][exp_list_tail] {link3 -1 code 2 code 1 code;}
+[exp_list_tail] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp_list_tail]<,>[exp] {link3 -1 code 3 code 1 code;}
+[exp_list_tail] -> {empty -1 code;}
+
+[ST] -> {mov 1 D -1 D;}[exp]<;> {pop -1 code; link3 -1 code 1 code -1 code;let -1 byte 0;}
+
+[ST] -> {mov 2 D -1 D;}<return> [exp]<;> {return -1 retRef -1 code;link3 -1 code 2 code -1 code;let -1 byte 0;}
+[ST] -> <return> <;> {returnVoid -1 retRef -1 code;let -1 byte 0;}
+
+[exp] -> {mov 1 D -1 D;} [exp1] {mov -1 code 1 code;}
+[exp] -> {mov 3 D -1 D;} <id> <=> [exp] {c_= -1 D 1 value -1 code;link3 -1 code 3 code -1 code;}
+
+[exp1] -> {mov 1 D -1 D;} [exp2] {mov -1 code 1 code;}
+
+[exp2] -> {mov 1 D -1 D;} [exp3] {mov -1 code 1 code;}
+[exp2] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp2] <||> [exp3] {c_|| -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp3] -> {mov 1 D -1 D;} [exp4] {mov -1 code 1 code;}
+[exp3] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp3] <&&> [exp4] {c_&& -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp4] -> {mov 1 D -1 D;} [exp5] {mov -1 code 1 code;}
+[exp4] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp4] <|> [exp5] {c_| -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp5] -> {mov 1 D -1 D;} [exp6] {mov -1 code 1 code;}
+[exp5] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp5] <^> [exp6] {c_^ -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp6] -> {mov 1 D -1 D;} [exp7] {mov -1 code 1 code;}
+[exp6] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp6] <&> [exp7] {c_& -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp7] -> {mov 1 D -1 D;} [exp8] {mov -1 code 1 code;}
+[exp7] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp7] <==> [exp8] {c_== -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+[exp7] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp7] <!=> [exp8] {c_!= -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp8] -> {mov 1 D -1 D;} [exp9] {mov -1 code 1 code;}
+[exp8] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp8] <more> [exp9] {c_> -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+[exp8] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp8] <<> [exp9] {c_< -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+[exp8] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp8] <meq> [exp9] {c_>= -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+[exp8] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp8] <<=> [exp9] {c_<= -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp9] -> {mov 1 D -1 D;} [exp10] {mov -1 code 1 code;}
+
+[exp10] -> {mov 1 D -1 D;} [exp11] {mov -1 code 1 code;}
+[exp10] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp10] <+> [exp11] {c_+ -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+[exp10] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp10] <-> [exp11] {c_- -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp11] -> {mov 1 D -1 D;} [exp12] {mov -1 code 1 code;}
+[exp11] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp11] <*> [exp12] {c_* -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+[exp11] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp11] </> [exp12] {c_/ -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+[exp11] -> {mov 1 D -1 D; mov 3 D -1 D;} [exp11] <%> [exp12] {c_% -1 code; link3 1 code 1 code 3 code; link3 -1 code 1 code -1 code;}
+
+[exp12] -> {mov 1 D -1 D;} [exp13] {mov -1 code 1 code;}
+[exp12] -> {mov 2 D -1 D;} <+>[exp12] {mov -1 code 2 code;}
+[exp12] -> {mov 2 D -1 D;} <->[exp12] {c_-1 -1 code; link3 -1 code 2 code -1 code;}
+[exp12] -> {mov 2 D -1 D;} <~>[exp13] {c_~ -1 code; link3 -1 code 2 code -1 code;}
+[exp12] -> {mov 2 D -1 D;} <!>[exp13] {c_! -1 code; link3 -1 code 2 code -1 code;}
+
+[exp13] -> {mov 2 D -1 D;} <(>[exp]<)> {mov -1 code 2 code;}
+[exp13] -> {mov 3 D -1 D;} <id> <(>[exp_list]<)> {callFun -1 D 1 value -1 code; link3 -1 code 3 code -1 code;}
+[exp13] -> <id> {takeVar -1 D 0 value -1 code;}
+[exp13] -> <const int> {takeConst 0 value -1 code;}
+
+[ST] -> {mov 3 D -1 D; createD -1 6; let 6 retRef 1; add3 6 retRef 6 retRef -1 retRef; mov 6 Lin -1 Lin; mov 6 Lout -1 Lout; let 6 brkRef 1; add3 6 brkRef 6 brkRef -1 brkRef;} <if> <(> [exp] <)> <{> [STs] <}>{label 6 Lout_if; jz 6 Lout_if -1 code; link3 -1 code 3 code -1 code; newEnv 6 byte -1 tmp; link3 -1 code -1 code -1 tmp; link3 -1 code -1 code 6 code; leave -1 tmp; link3 -1 code -1 code -1 tmp; pLabel 6 Lout_if -1 tmp; link3 -1 code -1 code -1 tmp; let -1 byte 0;}
+
+[ST] -> {mov 3 D -1 D; createD -1 6; createD -1 10; let 6 retRef 1; add3 6 retRef 6 retRef -1 retRef; let 10 retRef 1; add3 10 retRef 10 retRef -1 retRef; mov 6 Lin -1 Lin; mov 6 Lout -1 Lout; mov 10 Lin -1 Lin; mov 10 Lout -1 Lout; let 6 brkRef 1; add3 6 brkRef 6 brkRef -1 brkRef; let 10 brkRef 1; add3 10 brkRef 10 brkRef -1 brkRef;} <if> <(> [exp] <)> <{> [STs] <}> <else> <{> [STs] <}>{label 6 L1_if; label 6 L2_if; jz 6 L1_if -1 code; link3 -1 code 3 code -1 code; newEnv 6 byte -1 tmp; link3 -1 code -1 code -1 tmp; link3 -1 code -1 code 6 code; leave -1 tmp; link3 -1 code -1 code -1 tmp; j 6 L2_if -1 tmp; link3 -1 code -1 code -1 tmp; pLabel 6 L1_if -1 tmp; link3 -1 code -1 code -1 tmp; newEnv 10 byte -1 tmp; link3 -1 code -1 code -1 tmp; link3 -1 code -1 code 10 code; leave -1 tmp; link3 -1 code -1 code -1 tmp; pLabel 6 L2_if -1 tmp; link3 -1 code -1 code -1 tmp; let -1 byte 0;}
+
+[ST] -> {mov 3 D -1 D; createD -1 6; let 6 retRef 1; add3 6 retRef 6 retRef -1 retRef; label 6 Lin; label 6 Lout; let 6 brkRef 1;} <while> <(> [exp] <)> <{> [STs] <}> { pLabel 6 Lin -1 code; link3 -1 code -1 code 3 code; jz 6 Lout -1 tmp; link3 -1 code -1 code -1 tmp; newEnv 6 byte -1 tmp; link3 -1 code -1 code -1 tmp; link3 -1 code -1 code 6 code;leave -1 tmp; link3 -1 code -1 code -1 tmp; j 6 Lin -1 tmp; link3 -1 code -1 code -1 tmp; pLabel 6 Lout -1 tmp; link3 -1 code -1 code -1 tmp; let -1 byte 0;}
+[ST] -> <continue> <;> {leave_n -1 brkRef -1 tmp; j -1 Lin -1 code; link3 -1 code -1 tmp -1 code; let -1 byte 0;}
+[ST] -> <break> <;> {leave_n -1 brkRef -1 tmp; j -1 Lout -1 code; link3 -1 code -1 tmp -1 code; }

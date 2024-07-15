@@ -44,6 +44,7 @@ cd out/build/Compiler #替换成自己的路径
 该程序可以产生两种输出：
 第一种，输出上面提到的构造函数代码到工作目录下（exe所在）的initcode.txt中
 需要取消以下两行代码注释
+
 ![image](https://github.com/user-attachments/assets/d14c3c50-8ce5-4a60-9577-cb841d3112a7)
 
 第二种，接受简化C语言代码输入进行编译，需要恢复注释。
